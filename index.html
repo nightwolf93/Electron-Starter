@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html >
   <head>
-    <title>GameMotion</title>
-    <script data-main="js/main" src="js/require.js"></script>
+    <meta charset="utf-8" />
+    <title>Perplexe</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body ng-app="perplexe">
+    <div id="sysbar">
+      <div class="menu-container">
+        <div class="item">Fichier(s)</div>
+        <div class="item">Options</div>
+        <div class="item">Aide</div>
+      </div>
+      <div class="title">Perplexe</div>
+      <div class="action-container">
+        <div class="bubble-bt bubble-green"></div>
+        <div class="bubble-bt bubble-orange"></div>
+        <div class="bubble-bt bubble-red"></div>
+      </div>
+    </div>
+    <div id="sidebar">
+      <div class="header-item"><i class="fa fa-arrow-down"></i> Téléchargement</div>
+      <div class="normal-item"><i class="fa fa-clock-o"></i> En attente</div>
+      <div class="normal-item"><i class="fa fa-spinner"></i> En cours</div>
+      <div class="normal-item"><i class="fa fa-check-circle"></i> Terminer</div>
+      <br />
+      <div class="header-item"><i class="fa fa-hdd-o"></i> Librairie</div>
+      <div class="normal-item"><i class="fa fa-film"></i> Vidéo</div>
+      <div class="normal-item"><i class="fa fa-music"></i> Audio</div>
+      <div class="normal-item"><i class="fa fa-file-archive-o"></i> Compressé</div>
+      <br />
+      <div class="header-item"><i class="fa fa-globe"></i> Web</div>
+      <div class="normal-item"><i class="fa fa-compass"></i> Découvrir</div>
+      <div class="normal-item"><i class="fa fa-search"></i> Rechercher</div>
+    </div>
+    <div id="main-content" ng-view>
 
+    </div>
+    <script src="js/jquery-1.9.1.js"></script>
+    <script src="js/all.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
   </body>
 </html>

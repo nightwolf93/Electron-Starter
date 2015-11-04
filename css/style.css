@@ -1,0 +1,130 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+}
+body {
+  background-color: #535A5E;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+#sysbar {
+  -webkit-app-region: drag;
+  background-color: #2E3233;
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+#sysbar .menu-container {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  -webkit-app-region: no-drag;
+}
+#sysbar .menu-container .item {
+  display: inline-block;
+  vertical-align: top;
+  min-width: 30px;
+  height: 35px;
+  font-size: 13px;
+  cursor: pointer;
+  color: gray;
+  margin-left: 10px;
+}
+#sysbar .menu-container .item:hover {
+  color: white;
+}
+#sysbar .title {
+  font-size: 16px;
+}
+#sysbar .action-container {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  -webkit-app-region: no-drag;
+}
+#sysbar .action-container .bubble-bt {
+  height: 17px;
+  width: 17px;
+  border-radius: 17px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 2px;
+  background-color: black;
+}
+#sysbar .action-container .bubble-red {
+  background-color: #FF605C;
+}
+#sysbar .action-container .bubble-red:hover {
+  background-color: #dc4642;
+}
+#sysbar .action-container .bubble-green {
+  background-color: #0ECA37;
+}
+#sysbar .action-container .bubble-green:hover {
+  background-color: #0fa12e;
+}
+#sysbar .action-container .bubble-orange {
+  background-color: #FEBD00;
+}
+#sysbar .action-container .bubble-orange:hover {
+  background-color: #d09d07;
+}
+#sidebar {
+  vertical-align: top;
+  display: inline-block;
+  background-color: #393E3F;
+  width: 20%;
+  height: 100%;
+  border-right: 1px solid #303030;
+  padding-top: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#sidebar .header-item {
+  white-space: nowrap;
+  color: white;
+  font-size: 17px;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+}
+#sidebar .header-item i {
+  margin-right: 2px;
+  font-size: 13px;
+}
+#sidebar .normal-item {
+  white-space: nowrap;
+  color: gray;
+  font-size: 15px;
+  padding-left: 45px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#sidebar .normal-item:hover {
+  color: white;
+}
+#sidebar .normal-item i {
+  margin-right: 2px;
+  font-size: 12px;
+}
+#main-content {
+  display: inline-block;
+  vertical-align: top;
+}
