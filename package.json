@@ -31,6 +31,7 @@
     "gulp-concat": "^2.6.0",
     "gulp-less": "^3.0.3",
     "gulp-plumber": "^1.0.1",
-    "gulp-watch": "^4.3.5"
+    "gulp-watch": "^4.3.5",
+    "webtorrent": "^0.62.3"
   }
 }

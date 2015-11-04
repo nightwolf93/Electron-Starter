@@ -10,9 +10,23 @@
   <body ng-app="perplexe">
     <div id="sysbar">
       <div class="menu-container">
-        <div class="item">Fichier(s)</div>
+        <div class="item">
+          Fichier(s)
+          <div class="sub-menu">
+            <div class="sub-item" data-menu="add-torrent">
+              <i class="fa fa-plus"></i> Ajouter un torrent <span>(Ctrl+N)</span>
+            </div>
+            <input class="add-torrent-input" type="file" style="display: none;" />
+          </div>
+        </div>
         <div class="item">Options</div>
-        <div class="item">Aide</div>
+        <div class="item">
+          Aide
+          <div class="sub-menu">
+            <div class="sub-item"><i class="fa fa-question"></i> A propos de</div>
+            <div class="sub-item"><i class="fa fa-github"></i> Github</div>
+          </div>
+        </div>
       </div>
       <div class="title">Perplexe</div>
       <div class="action-container">

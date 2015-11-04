@@ -8,7 +8,6 @@ class Main
           templateUrl: 'partials/index.html',
           controller: 'IndexCtrl'
         }
-
     ]
     indexController = new IndexController(@app)
     @app.run ($rootScope, $templateCache) ->

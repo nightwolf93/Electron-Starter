@@ -12,11 +12,13 @@ body {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 #sysbar {
   -webkit-app-region: drag;
   background-color: #2E3233;
+  border-bottom: 1px solid black;
   width: 100%;
   @height: 35px;
   height: @height;
@@ -24,6 +26,7 @@ body {
   color: white;
   text-align: center;
   position: relative;
+  z-index: 1000;
 
   .menu-container {
     position: absolute;
@@ -40,9 +43,43 @@ body {
       cursor: pointer;
       color: gray;
       margin-left: 10px;
+      position: relative;
+
+      .sub-menu {
+        position: absolute;
+        top: 30px;
+        min-width: 50px;
+        min-height: 30px;
+        background-color: #2E3233;
+        border: 1px solid black;
+        border-top: none;
+        display: none;
+
+        .sub-item {
+          border-bottom: 1px solid #303030;
+          color: gray;
+          width: 100%;
+          text-align: left;
+          padding-left: 15px;
+          padding-right: 15px;
+
+          span {
+            font-size: 10px;
+          }
+
+          &:hover {
+            color: white;
+
+          }
+        }
+      }
 
       &:hover {
         color: white;
+
+        .sub-menu {
+          display: block;
+        }
       }
     }
   }
@@ -97,12 +134,14 @@ body {
 }
 
 #sidebar {
+  position: relative;
   vertical-align: top;
   display: inline-block;
   background-color: #393E3F;
+  z-index: 1;
   width: 20%;
   height: 100%;
-  border-right: 1px solid #303030;
+  border-right: 1px solid black;
   padding-top: 20px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -148,4 +187,6 @@ body {
 #main-content {
   display: inline-block;
   vertical-align: top;
+  width: 80%;
+  margin-left: -5px;
 }

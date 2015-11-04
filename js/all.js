@@ -5,7 +5,22 @@
     function IndexController(app) {
       this.app = app;
       this.app.controller('IndexCtrl', function($scope) {
-        return $scope.message = "lol";
+        $(".bubble-red").click(function() {
+          var remote;
+          remote = require('remote');
+          return remote.getCurrentWindow().close();
+        });
+        $(".bubble-orange").click(function() {
+          var remote;
+          remote = require('remote');
+          return remote.getCurrentWindow().minimize();
+        });
+        $('.add-torrent-input').change(function() {
+          return console.log('change');
+        });
+        return $('[data-menu="add-torrent"]').click(function() {
+          return $('.add-torrent-input').click();
+        });
       });
     }
 
