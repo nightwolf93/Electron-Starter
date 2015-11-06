@@ -3,6 +3,10 @@
   padding: 0;
   border: none;
 
+  .torrent-item {
+    cursor: pointer;
+  }
+
   tr {
     width: 100%;
     th {
@@ -18,6 +22,38 @@
       i {
         margin-right: 5px;
       }
+    }
+
+    td {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 13px;
+      padding: 5px;
+      border-bottom: 1px solid #393E3F;
+      position: relative;
+    }
+
+    .progress-bar {
+      width: 50%;
+      height: 100%;
+      background-color: #4A7B4A;
+      position: relative;
+    }
+
+    .centered-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 30px;
+      color: white;
+      text-align: center;
+      z-index: 1;
+      font-size: 11px;
+    }
+
+    &:nth-child(odd) {
+      background-color: #393E3F;
     }
   }
 }

@@ -5,6 +5,9 @@ var gulp = require('gulp'),
     coffee = require('gulp-coffee'),
     plumber = require('gulp-plumber'),
     concat = require('gulp-concat');
+var handlebars = require('gulp-handlebars');
+var wrap = require('gulp-wrap');
+var declare = require('gulp-declare');
 
 gulp.task('watch', function (cb) {
     watch('less/**/*.less', function () {
@@ -22,6 +25,19 @@ gulp.task('watch', function (cb) {
         .pipe(plumber())
         .pipe(coffee())
         .pipe(concat('all.js'))
+        .pipe(gulp.dest('./js'));
+    });
+
+    watch('templates/**/*.hbs', function () {
+      gulp.src('templates/**/*.hbs')
+        .pipe(plumber())
+        .pipe(handlebars())
+        .pipe(wrap('Handlebars.template(<%= contents %>)'))
+        .pipe(declare({
+          namespace: 'Templates',
+          noRedeclare: true, // Avoid duplicate declarations
+        }))
+        .pipe(concat('templates.js'))
         .pipe(gulp.dest('./js'));
     });
 });

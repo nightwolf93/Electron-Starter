@@ -8,10 +8,12 @@ class IndexController
         remote = require('remote')
         remote.getCurrentWindow().minimize()
 
-
       # Menu item
-      $('.add-torrent-input').change ->
-        console.log 'change'
+      $('.add-torrent-input').change (e) ->
+        file = @files[0]
+        path = file.path
+        TorrentService.addToQueue path
+
       $('[data-menu="add-torrent"]').click ->
         $('.add-torrent-input').click()
 
