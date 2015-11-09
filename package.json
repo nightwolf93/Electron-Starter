@@ -26,6 +26,7 @@
     "electron-prebuilt": "^0.34.0"
   },
   "dependencies": {
+    "fluent-ffmpeg": "^2.0.1",
     "gulp": "^3.9.0",
     "gulp-coffee": "^2.3.1",
     "gulp-concat": "^2.6.0",
@@ -35,7 +36,9 @@
     "gulp-plumber": "^1.0.1",
     "gulp-watch": "^4.3.5",
     "gulp-wrap": "^0.11.0",
+    "nedb": "^1.4.0",
     "uid": "0.0.2",
-    "webtorrent": "^0.62.3"
+    "webtorrent": "^0.62.3",
+    "youtube-dl": "^1.10.5"
   }
 }

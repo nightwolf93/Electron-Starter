@@ -1,29 +1,124 @@
 (function() {
+  var Database;
+
+  Database = (function() {
+    function Database() {}
+
+    Database.initialize = function() {
+      var Datastore;
+      Datastore = require('nedb');
+      Database.DB = new Datastore({
+        filename: "./data/data.db",
+        autoload: true
+      });
+      return console.log("Connected to database");
+    };
+
+    Database.saveFile = function(file) {
+      return Database.DB.insert({
+        fileName: file.fileName,
+        filePath: file.filePath,
+        musicPath: file.musicFilePath,
+        musicName: file.musicFileName
+      }, function() {});
+    };
+
+    return Database;
+
+  })();
+
+  window.Database = Database;
+
+}).call(this);
+
+(function() {
+  var FileManager, YoutubeFile;
+
+  FileManager = (function() {
+    function FileManager() {}
+
+    FileManager.addFile = function(file) {
+      return FileManager.Files.push(file);
+    };
+
+    return FileManager;
+
+  })();
+
+  FileManager.Files = [];
+
+  window.FileManager = FileManager;
+
+  YoutubeFile = (function() {
+    function YoutubeFile(video, filePath) {
+      this.video = video;
+      this.filePath = filePath;
+      this.createDate = moment().format();
+      this.fileName = this.filePath.split('/')[2];
+      this.musicFilePath = './library/musics/' + this.fileName.replace(".mp4", ".mp3");
+      this.musicFileName = this.fileName.replace(".mp4", ".mp3");
+      console.log("New video : ", this.video, this.fileName);
+      this.convertToMp3();
+    }
+
+    YoutubeFile.prototype.convertToMp3 = function() {
+      var command, ffmpeg;
+      ffmpeg = require('fluent-ffmpeg');
+      command = new ffmpeg(this.filePath);
+      command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg.exe");
+      command.setFfprobePath("./lib/ffmpeg/bin/ffprobe.exe");
+      command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay.exe");
+      command.withAudioCodec('libmp3lame').toFormat('mp3');
+      Database.saveFile(this);
+      return command.saveToFile(this.musicFilePath, (function(_this) {
+        return function(stdout, stderr) {
+          return console.log('done');
+        };
+      })(this));
+    };
+
+    return YoutubeFile;
+
+  })();
+
+  window.YoutubeFile = YoutubeFile;
+
+}).call(this);
+
+(function() {
   var IndexController;
 
   IndexController = (function() {
     function IndexController(app) {
       this.app = app;
       this.app.controller('IndexCtrl', function($scope) {
-        $(".bubble-red").click(function() {
-          var remote;
-          remote = require('remote');
-          return remote.getCurrentWindow().close();
+        var refreshTable;
+        $("[data-menu='add-video']").click(function() {
+          return UI.openPopover("add-video-popover", {});
         });
-        $(".bubble-orange").click(function() {
-          var remote;
-          remote = require('remote');
-          return remote.getCurrentWindow().minimize();
+        $('body').on('click', '[data-action="close-popover"]', function() {
+          return UI.closePopover();
         });
-        $('.add-torrent-input').change(function(e) {
-          var file, path;
-          file = this.files[0];
-          path = file.path;
-          return TorrentService.addToQueue(path);
+        $('body').on('click', '[data-action="add-video"]', function() {
+          Youtube.downloadVideo($('[data-input="add-video"]').val(), (function(_this) {
+            return function(video, fileName) {
+              var file;
+              file = new YoutubeFile(video, fileName);
+              FileManager.addFile(file);
+              return refreshTable();
+            };
+          })(this));
+          return UI.closePopover();
         });
-        return $('[data-menu="add-torrent"]').click(function() {
-          return $('.add-torrent-input').click();
-        });
+        refreshTable = function() {
+          var html;
+          console.log('Refresh table ..');
+          html = Templates["playlist"]({
+            files: FileManager.Files
+          });
+          return $("#main-content").html(html);
+        };
+        return refreshTable();
       });
     }
 
@@ -52,8 +147,9 @@
       ]);
       indexController = new IndexController(this.app);
       this.app.run(function($rootScope, $templateCache) {
-        console.log('Started');
-        return TorrentService.initialize();
+        console.log('Started app');
+        UI.initialize();
+        return Database.initialize();
       });
     }
 
@@ -71,77 +167,96 @@
 }).call(this);
 
 (function() {
-  var TorrentInstance, TorrentService, WebTorrent;
+  var UI;
 
-  WebTorrent = require('webtorrent');
+  UI = (function() {
+    function UI() {}
 
-  TorrentService = (function() {
-    function TorrentService() {}
-
-    TorrentService.initialize = function() {
-      TorrentService.Client = new WebTorrent();
-      return TorrentService.Queue = [];
-    };
-
-    TorrentService.addToQueue = function(torrentId) {
-      return TorrentService.Client.add(torrentId, function(torrent) {
-        var instance;
-        instance = new TorrentInstance(torrent);
-        return TorrentService.Queue.push(instance);
+    UI.initialize = function() {
+      $(".bubble-red").click(function() {
+        var remote;
+        remote = require('remote');
+        return remote.getCurrentWindow().close();
+      });
+      return $(".bubble-orange").click(function() {
+        var remote;
+        remote = require('remote');
+        return remote.getCurrentWindow().minimize();
       });
     };
 
-    return TorrentService;
-
-  })();
-
-  TorrentInstance = (function() {
-    function TorrentInstance(torrent1) {
-      this.torrent = torrent1;
-      this.dom = null;
-      this.buildTemplate();
-      console.log('Client is downloading:', this.torrent);
-      this.torrent.on('wire', (function(_this) {
-        return function(wire, addr) {
-          return console.log('connected to peer with address ' + addr);
-        };
-      })(this));
-      this.torrent.on('download', (function(_this) {
-        return function() {
-          _this.dom.find('.progress-bar').css('width', (_this.torrent.progress * 100) + '%');
-          _this.dom.find('.progress-text').text((_this.torrent.progress * 100).toFixed(2) + '%');
-          _this.dom.find('.download-speed').text(filesize(_this.torrent.downloadSpeed()) + "/s");
-          return console.log(_this.torrent);
-        };
-      })(this));
-      this.torrent.on('done', (function(_this) {
-        return function() {
-          _this.dom.find('.progress-bar').css('width', '100%');
-          _this.dom.find('.progress-text').text('100%');
-          console.log('torrent finished downloading');
-          return _this.torrent.files.forEach(function(file) {
-            return console.log(file);
-          });
-        };
-      })(this));
-    }
-
-    TorrentInstance.prototype.buildTemplate = function() {
+    UI.openPopover = function(tplName, parameters) {
       var html;
-      html = Templates["torrent-row"]({
-        name: this.torrent.name,
-        size: filesize(this.torrent.length),
-        progress: 0,
-        downloadSpeed: 0,
-        uploadSpeed: 0
+      $("#overlay-black").css('pointer-events', 'auto');
+      html = Templates[tplName](parameters);
+      TweenMax.fromTo("#overlay-black", 0.5, {
+        opacity: 0
+      }, {
+        opacity: 1
       });
-      return this.dom = $(html).appendTo("#torrent-list");
+      TweenMax.fromTo("#overlay-black .popover", 0.5, {
+        marginTop: "-300px"
+      }, {
+        marginTop: 0
+      });
+      return $("#overlay-black .popover").html(html);
     };
 
-    return TorrentInstance;
+    UI.closePopover = function() {
+      TweenMax.fromTo("#overlay-black", 0.5, {
+        opacity: 1
+      }, {
+        opacity: 0
+      });
+      TweenMax.fromTo("#overlay-black .popover", 1, {
+        marginTop: 0
+      }, {
+        marginTop: "-300px"
+      });
+      return $("#overlay-black").css('pointer-events', 'none');
+    };
+
+    return UI;
 
   })();
 
-  window.TorrentService = TorrentService;
+  window.UI = UI;
+
+}).call(this);
+
+(function() {
+  var Youtube, fs, youtubedl;
+
+  fs = require('fs');
+
+  youtubedl = require('youtube-dl');
+
+  Youtube = (function() {
+    function Youtube() {}
+
+    Youtube.downloadVideo = function(link, callback) {
+      var video, videoInfo;
+      video = youtubedl(link, ['--format=18'], {
+        cwd: __dirname
+      });
+      videoInfo = null;
+      video.on('info', function(info) {
+        console.log('filename: ' + info.filename);
+        return videoInfo = info;
+      });
+      video.on('end', function() {
+        var fileName;
+        fileName = 'library/videos/' + videoInfo.filename.replace(/[^a-z0-9]/gi, '_').toLowerCase().replace("_mp4", ".mp4");
+        fs.rename('library/_temp.mp4', fileName);
+        return callback(video, fileName);
+      });
+      return video.pipe(fs.createWriteStream('library/_temp.mp4'));
+    };
+
+    return Youtube;
+
+  })();
+
+  global.Youtube = Youtube;
 
 }).call(this);

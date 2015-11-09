@@ -11,8 +11,9 @@ class Main
     ]
     indexController = new IndexController(@app)
     @app.run ($rootScope, $templateCache) ->
-      console.log 'Started'
-      TorrentService.initialize()
+      console.log 'Started app'
+      UI.initialize()
+      Database.initialize()
 
 $ ->
   main = new Main()

@@ -8,15 +8,22 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body ng-app="perplexe">
+    <div id="overlay-black">
+      <div class="popover">
+        <!-- Popover -->
+      </div>
+    </div>
     <div id="sysbar">
       <div class="menu-container">
         <div class="item">
           Fichier(s)
           <div class="sub-menu">
-            <div class="sub-item" data-menu="add-torrent">
-              <i class="fa fa-plus"></i> Ajouter un torrent <span>(Ctrl+N)</span>
+            <div class="sub-item" data-menu="add-video">
+              <i class="fa fa-plus"></i> Ajouter une vidéo <span>(Ctrl+N)</span>
             </div>
-            <input class="add-torrent-input" type="file" style="display: none;" />
+            <div class="sub-item" data-menu="add-playlist">
+              <i class="fa fa-plus"></i> Ajouter une playlist <span>(Ctrl+P)</span>
+            </div>
           </div>
         </div>
         <div class="item">Options</div>
@@ -36,29 +43,33 @@
       </div>
     </div>
     <div id="sidebar">
+      <div class="header-item"><i class="fa fa-home"></i> Accueil</div>
+      <div class="normal-item"><i class="fa fa-compass"></i> Découvrir</div>
+      <br />
+      <div class="header-item"><i class="fa fa-arrow-down"></i> Téléchargement</div>
+      <div class="normal-item"><i class="fa fa-film"></i> Vidéos</div>
+      <div class="normal-item"><i class="fa fa-music"></i> Musiques</div>
+      <br />
+      <div class="header-item"><i class="fa fa-list"></i> Playlists</div>
+      <div class="normal-item">Aucune playlist ..</div>
+      <!--
       <div class="header-item"><i class="fa fa-arrow-down"></i> Téléchargement</div>
       <div class="normal-item"><i class="fa fa-clock-o"></i> En attente</div>
       <div class="normal-item"><i class="fa fa-spinner"></i> En cours</div>
       <div class="normal-item"><i class="fa fa-check-circle"></i> Terminer</div>
-      <br />
-      <div class="header-item"><i class="fa fa-hdd-o"></i> Librairie</div>
-      <div class="normal-item"><i class="fa fa-film"></i> Vidéo</div>
-      <div class="normal-item"><i class="fa fa-music"></i> Audio</div>
-      <div class="normal-item"><i class="fa fa-file-archive-o"></i> Compressé</div>
-      <br />
-      <div class="header-item"><i class="fa fa-globe"></i> Web</div>
-      <div class="normal-item"><i class="fa fa-compass"></i> Découvrir</div>
-      <div class="normal-item"><i class="fa fa-search"></i> Rechercher</div>
+    -->
     </div>
     <div id="main-content" ng-view>
 
     </div>
     <script src="js/jquery-1.9.1.js"></script>
     <script src="js/filesize.min.js"></script>
+    <script src="js/moment.js"></script>
     <script src="js/handlebars-v2.0.0.js"></script>
     <script src="js/templates.js"></script>
     <script src="js/all.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
   </body>
 </html>

@@ -1,20 +1,24 @@
 class IndexController
   constructor: (@app) ->
     @app.controller 'IndexCtrl', ($scope) ->
-      $(".bubble-red").click ->
-        remote = require('remote')
-        remote.getCurrentWindow().close()
-      $(".bubble-orange").click ->
-        remote = require('remote')
-        remote.getCurrentWindow().minimize()
+      $("[data-menu='add-video']").click ->
+        UI.openPopover "add-video-popover", {}
 
-      # Menu item
-      $('.add-torrent-input').change (e) ->
-        file = @files[0]
-        path = file.path
-        TorrentService.addToQueue path
+      $('body').on 'click', '[data-action="close-popover"]', ->
+        UI.closePopover()
 
-      $('[data-menu="add-torrent"]').click ->
-        $('.add-torrent-input').click()
+      $('body').on 'click', '[data-action="add-video"]', ->
+        Youtube.downloadVideo $('[data-input="add-video"]').val(), (video, fileName) =>
+          file = new YoutubeFile(video, fileName)
+          FileManager.addFile file
+          refreshTable()
+        UI.closePopover()
+
+      refreshTable = () ->
+        console.log 'Refresh table ..'
+        html = Templates["playlist"]({files: FileManager.Files})
+        $("#main-content").html html
+
+      refreshTable()
 
 window.IndexController = IndexController
