@@ -1,5 +1,8 @@
 class UI
   @initialize: ->
+    $(".bubble-green").click ->
+      remote = require('remote')
+      remote.getCurrentWindow().maximize()
     $(".bubble-red").click ->
       remote = require('remote')
       remote.getCurrentWindow().close()

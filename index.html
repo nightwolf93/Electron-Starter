@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html >
+<html>
   <head>
     <meta charset="utf-8" />
     <title>Perplexe</title>
@@ -47,8 +47,8 @@
       <div class="normal-item"><i class="fa fa-compass"></i> Découvrir</div>
       <br />
       <div class="header-item"><i class="fa fa-arrow-down"></i> Téléchargement</div>
-      <div class="normal-item"><i class="fa fa-film"></i> Vidéos</div>
-      <div class="normal-item"><i class="fa fa-music"></i> Musiques</div>
+      <a href="#video"><div class="normal-item"><i class="fa fa-film"></i> Vidéos</div></a>
+      <a href="#music"><div class="normal-item"><i class="fa fa-music"></i> Musiques</div></a>
       <br />
       <div class="header-item"><i class="fa fa-list"></i> Playlists</div>
       <div class="normal-item">Aucune playlist ..</div>
@@ -62,14 +62,33 @@
     <div id="main-content" ng-view>
 
     </div>
-    <script src="js/jquery-1.9.1.js"></script>
+    <div id="music-player">
+      <div class="control-bt" style="margin-left: 15px;">
+        <i class="fa fa-step-backward"></i>
+      </div>
+      <div class="control-bt play-bt">
+        <i class="fa fa-play bt-play"></i>
+      </div>
+      <div class="control-bt">
+        <i class="fa fa-step-forward"></i>
+      </div>
+      <div class="seek-control">
+        <div class="title">...</div>
+        <div class="progress-bar">
+          <div class="seek-bt"></div>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery-1.9.1.min.js"></script>
     <script src="js/filesize.min.js"></script>
     <script src="js/moment.js"></script>
+    <script src="js/howler.min.js"></script>
     <script src="js/handlebars-v2.0.0.js"></script>
     <script src="js/templates.js"></script>
     <script src="js/all.js"></script>
     <script src="js/angular.min.js"></script>
     <script src="js/angular-route.min.js"></script>
+    <script src="js/spin.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
   </body>
 </html>

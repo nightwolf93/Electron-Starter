@@ -16,11 +16,15 @@
 
     Database.saveFile = function(file) {
       return Database.DB.insert({
+        type: "file",
         fileName: file.fileName,
         filePath: file.filePath,
         musicPath: file.musicFilePath,
-        musicName: file.musicFileName
-      }, function() {});
+        musicName: file.musicFileName,
+        createDate: file.createDate
+      }, function() {
+        return console.log('File saved');
+      });
     };
 
     return Database;
@@ -53,23 +57,41 @@
     function YoutubeFile(video, filePath) {
       this.video = video;
       this.filePath = filePath;
+      console.log('New youtube file');
+    }
+
+    YoutubeFile.prototype.fromDatabase = function(obj) {
+      this.createDate = obj.createDate;
+      this.fileName = obj.fileName;
+      this.musicFilePath = obj.musicPath;
+      return this.musicFileName = obj.musicName;
+    };
+
+    YoutubeFile.prototype.fromDownload = function() {
       this.createDate = moment().format();
       this.fileName = this.filePath.split('/')[2];
       this.musicFilePath = './library/musics/' + this.fileName.replace(".mp4", ".mp3");
       this.musicFileName = this.fileName.replace(".mp4", ".mp3");
       console.log("New video : ", this.video, this.fileName);
-      this.convertToMp3();
-    }
+      return this.convertToMp3();
+    };
 
     YoutubeFile.prototype.convertToMp3 = function() {
       var command, ffmpeg;
       ffmpeg = require('fluent-ffmpeg');
       command = new ffmpeg(this.filePath);
-      command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg.exe");
-      command.setFfprobePath("./lib/ffmpeg/bin/ffprobe.exe");
-      command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay.exe");
+      if (process.platform !== 'darwin') {
+        command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg.exe");
+        command.setFfprobePath("./lib/ffmpeg/bin/ffprobe.exe");
+        command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay.exe");
+      } else {
+        command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg");
+        command.setFfprobePath("./lib/ffmpeg/bin/ffprobe");
+        command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay");
+      }
       command.withAudioCodec('libmp3lame').toFormat('mp3');
       Database.saveFile(this);
+      UI.closePopover();
       return command.saveToFile(this.musicFilePath, (function(_this) {
         return function(stdout, stderr) {
           return console.log('done');
@@ -92,7 +114,7 @@
     function IndexController(app) {
       this.app = app;
       this.app.controller('IndexCtrl', function($scope) {
-        var refreshTable;
+        var loadFromDatabase, refreshTable;
         $("[data-menu='add-video']").click(function() {
           return UI.openPopover("add-video-popover", {});
         });
@@ -100,16 +122,34 @@
           return UI.closePopover();
         });
         $('body').on('click', '[data-action="add-video"]', function() {
-          Youtube.downloadVideo($('[data-input="add-video"]').val(), (function(_this) {
+          UI.closePopover();
+          return Youtube.downloadVideo($('[data-input="add-video"]').val(), (function(_this) {
             return function(video, fileName) {
               var file;
               file = new YoutubeFile(video, fileName);
+              file.fromDownload();
               FileManager.addFile(file);
               return refreshTable();
             };
           })(this));
-          return UI.closePopover();
         });
+        loadFromDatabase = function() {
+          FileManager.Files = [];
+          return Database.DB.find({
+            type: "file"
+          }, (function(_this) {
+            return function(err, files) {
+              var f, i, len, yfile;
+              for (i = 0, len = files.length; i < len; i++) {
+                f = files[i];
+                yfile = new YoutubeFile(null, f.filePath);
+                yfile.fromDatabase(f);
+                FileManager.addFile(yfile);
+              }
+              return refreshTable();
+            };
+          })(this));
+        };
         refreshTable = function() {
           var html;
           console.log('Refresh table ..');
@@ -118,7 +158,7 @@
           });
           return $("#main-content").html(html);
         };
-        return refreshTable();
+        return loadFromDatabase();
       });
     }
 
@@ -135,17 +175,24 @@
 
   Main = (function() {
     function Main() {
-      var indexController;
+      var indexController, videosController;
       this.app = angular.module('perplexe', ["ngRoute"]);
       this.app.config([
         "$routeProvider", function($routeProvider, $scope) {
           return $routeProvider.when('/', {
             templateUrl: 'partials/index.html',
             controller: 'IndexCtrl'
+          }).when('/music', {
+            templateUrl: 'partials/index.html',
+            controller: 'IndexCtrl'
+          }).when('/video', {
+            templateUrl: 'partials/videos.html',
+            controller: 'VideosCtrl'
           });
         }
       ]);
       indexController = new IndexController(this.app);
+      videosController = new VideosController(this.app);
       this.app.run(function($rootScope, $templateCache) {
         console.log('Started app');
         UI.initialize();
@@ -173,6 +220,11 @@
     function UI() {}
 
     UI.initialize = function() {
+      $(".bubble-green").click(function() {
+        var remote;
+        remote = require('remote');
+        return remote.getCurrentWindow().maximize();
+      });
       $(".bubble-red").click(function() {
         var remote;
         remote = require('remote');
@@ -225,6 +277,25 @@
 }).call(this);
 
 (function() {
+  var VideosController;
+
+  VideosController = (function() {
+    function VideosController(app) {
+      this.app = app;
+      this.app.controller('VideosCtrl', function($scope) {
+        return console.log('videosCtrl');
+      });
+    }
+
+    return VideosController;
+
+  })();
+
+  window.VideosController = VideosController;
+
+}).call(this);
+
+(function() {
   var Youtube, fs, youtubedl;
 
   fs = require('fs');
@@ -236,6 +307,9 @@
 
     Youtube.downloadVideo = function(link, callback) {
       var video, videoInfo;
+      UI.openPopover("loading", {
+        message: "Téléchargement en cours .."
+      });
       video = youtubedl(link, ['--format=18'], {
         cwd: __dirname
       });

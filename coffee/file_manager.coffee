@@ -7,6 +7,15 @@ window.FileManager = FileManager
 
 class YoutubeFile
   constructor: (@video, @filePath) ->
+    console.log 'New youtube file'
+
+  fromDatabase: (obj) ->
+    @createDate = obj.createDate
+    @fileName = obj.fileName
+    @musicFilePath = obj.musicPath
+    @musicFileName = obj.musicName
+
+  fromDownload: ->
     @createDate = moment().format()
     @fileName = @filePath.split('/')[2]
     @musicFilePath = './library/musics/' + @fileName.replace(".mp4", ".mp3")
@@ -17,11 +26,17 @@ class YoutubeFile
   convertToMp3: ->
     ffmpeg = require('fluent-ffmpeg');
     command = new ffmpeg(@filePath);
-    command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg.exe")
-    command.setFfprobePath("./lib/ffmpeg/bin/ffprobe.exe")
-    command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay.exe")
+    if process.platform != 'darwin'
+      command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg.exe")
+      command.setFfprobePath("./lib/ffmpeg/bin/ffprobe.exe")
+      command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay.exe")
+    else
+      command.setFfmpegPath("./lib/ffmpeg/bin/ffmpeg")
+      command.setFfprobePath("./lib/ffmpeg/bin/ffprobe")
+      command.setFlvtoolPath("./lib/ffmpeg/bin/ffplay")
     command.withAudioCodec('libmp3lame').toFormat('mp3')
     Database.saveFile @
+    UI.closePopover()
     command.saveToFile @musicFilePath, (stdout, stderr) =>
       console.log 'done'
 

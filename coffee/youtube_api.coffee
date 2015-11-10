@@ -3,6 +3,7 @@ youtubedl = require('youtube-dl')
 
 class Youtube
   @downloadVideo: (link, callback) ->
+    UI.openPopover "loading", { message: "Téléchargement en cours .." }
     video = youtubedl link, ['--format=18'], { cwd: __dirname }
     videoInfo = null
     video.on 'info', (info) ->

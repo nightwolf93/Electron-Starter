@@ -1,0 +1,67 @@
+#music-player {
+  z-index: 0;
+  background-color: #393E3F;
+  position: absolute;
+  left: 200px;
+  right: 0px;
+  bottom: 0;
+  height: 50px;
+  line-height: 50px;
+  border-top: 1px solid black;
+  -moz-box-shadow: 0px 0px 15px 0px #000000;
+  -webkit-box-shadow: 0px 0px 15px 0px #000000;
+  -o-box-shadow: 0px 0px 15px 0px #000000;
+  box-shadow: 0px 0px 15px 0px #000000;
+  filter:progid:DXImageTransform.Microsoft.Shadow(color=#000000, Direction=NaN, Strength=15);
+
+  .control-bt {
+    display: inline-block;
+    height: 25px;
+    font-size: 25px;
+    cursor: pointer;
+
+    &:active {
+      transform: scale(.9);
+    }
+  }
+
+  .play-bt {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .seek-control {
+    position: absolute;
+    top: 5px;
+    left: 110px;
+    right: 10px;
+    line-height: 30px;
+    height: 50px;
+    vertical-align: top;
+
+    .title {
+      font-size: 11px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 2px;
+      background-color: gray;
+      border-radius: 5px;
+      position: relative;
+
+      .seek-bt {
+        @size: 10px;
+        background-color: white;
+        border: 1px solid lightgray;
+        height: @size;
+        width: @size;
+        border-radius: @size;
+        position: absolute;
+        top: -5px;
+        left: 0px;
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -1,14 +1,19 @@
 <table class="playlist-table ptable" style="width: 100%; height: 100%;" cellspacing="0" cellpadding="0">
   <tr>
     <th style="width: 10%;"> </th>
-    <th style="width: 70%;"><i class="fa fa-sort"></i> Nom</th>
-    <th style="width: 20%;"><i class="fa fa-sort"></i> Date d'ajout</th>
+    <th style="width: 90%;"><i class="fa fa-sort"></i> Nom</th>
   </tr>
   {{#each files}}
-    <tr class="table-item">
-      <td class="td-1"><i class="fa fa-youtube-play" style="font-size: 35px;"></i></td>
-      <td>{{fileName}}</td>
-      <td>{{createDate}}</td>
+    <tr data-id="{{@index}}" class="table-item">
+      <td class="td-1">
+        <i class="fa fa-play bt-play" style="font-size: 25px; margin-right: 5px;"></i>
+        <i class="fa fa-plus" style="font-size: 25px;"></i>
+      </td>
+      <td>
+        {{musicFileName}}
+        <br />
+        <span style="opacity: 0.2; font-size: 9px;">{{createDate}}</span>
+      </td>
       <!--
       <td>
         <div class="progress-bar" style="width: 100%;"></div>
@@ -21,8 +26,12 @@
 
 <style>
 
-  .table-item:hover .td-1 {
+  i:hover {
     color: white;
+  }
+
+  i {
+    cursor: pointer;
   }
 
   .td-1 {
@@ -33,3 +42,27 @@
   }
 
 </style>
+
+<script>
+
+$(".table-item .bt-play").click(function() {
+  var file = FileManager.Files[$(this).parent().parent().data('id')];
+  var sound = new Howl({
+    urls: [file.musicFilePath],
+  }).play();
+  $("#music-player .seek-control .title").text(file.musicFileName);
+  setInterval(function(){
+    var pg = $(".seek-control .progress-bar");
+    var duration = sound._duration;
+    var currentPos = sound.pos();
+
+    var pgProgressPos = currentPos / duration * 100;
+    console.log(pgProgressPos);
+
+    $(".seek-control .seek-bt ").css('left', pgProgressPos * (pg.width() / 100) + "px");
+  }, 200);
+  //open = require("open");
+  //open(file.musicFilePath);
+});
+
+</script>
